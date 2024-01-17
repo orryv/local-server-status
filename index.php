@@ -26,6 +26,7 @@
                 padding: 10px;
                 margin-top: 20px;
                 margin-bottom: 20px;
+                max-width: 600px;
             }
 
             .serverItem{
@@ -87,12 +88,14 @@
             .serverItem>.name{
                 color:white;
                 text-decoration: none;
+                width: 25vw;
+                display:inline-block;
             }
 
             .serverItem>.url{
                 color: #aeaeae;
-                font-size: 12px;
-                margin-left: 10px;
+                font-size: 10px;
+                margin-left: 56px;
             }
 
             .serverItem>.responseTime{
@@ -106,6 +109,7 @@
                 margin-top: 10px;
                 margin-left: 56px;
                 font-size: 12px;
+                font-family: monospace;
             }
         </style>
 
@@ -127,6 +131,8 @@
         
         </a>
 
+        <a href="https://github.com/orryv/local-server-status" target="_blank" style="position: fixed; bottom: 10px; right: 10px; color: #aeaeae; font-size: 10px;">orryv/local-server-status</a>
+
 
         
         
@@ -147,7 +153,7 @@
                     let serverItem = serverItemDummy.clone();
                     serverItem.attr('id', json[key].name);
                     serverItem.css('display', 'block');
-                    serverItem.attr('href', (json[key].ssl ? 'https://' : 'http://') + json[key].host + ':' + json[key].port);
+                    serverItem.attr('href', (json[key].ssl ? 'https://' : 'http://') + json[key].host + ':' + json[key].port + json[key].path);
                     serverItem.attr('target', '_blank');
 
                     // add status as class to server item
@@ -171,18 +177,17 @@
                     nameSpan.text(json[key].name);
                     nameSpan.appendTo(serverItem);
 
-                    // add url as span with class to server item
-                    let urlSpan = $('<span></span>');
-                    urlSpan.addClass('url');
-                    urlSpan.text((json[key].ssl ? 'https://' : 'http://') + json[key].host + ':' + json[key].port);
-                    urlSpan.appendTo(serverItem);
-
-
                     // add response time as span with class to server item
                     let responseTimeSpan = $('<div></div>');
                     responseTimeSpan.addClass('responseTime');
                     responseTimeSpan.text(json[key].responseTime+'s');
                     responseTimeSpan.appendTo(serverItem);
+
+                    // add url as span with class to server item
+                    let urlSpan = $('<div></div>');
+                    urlSpan.addClass('url');
+                    urlSpan.text((json[key].ssl ? 'https://' : 'http://') + json[key].host + ':' + json[key].port + json[key].path);
+                    urlSpan.appendTo(serverItem);
 
                     // add error message as span with class to server item
                     if(json[key].statusMessage != ''){
@@ -209,6 +214,9 @@
                         let json = JSON.parse(data);
                         console.log(json);
                         updateServerStatus(json);
+                        setTimeout(() => {
+                            getData();
+                        }, 500);
                     },
                     error: function (data) {
                         
@@ -218,9 +226,9 @@
 
             getData();
 
-            setInterval(() => {
-                getData();
-            }, 5000);
+            // setInterval(() => {
+            //     getData();
+            // }, 5000);
 
     </script>
 
